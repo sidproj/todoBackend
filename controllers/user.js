@@ -72,6 +72,7 @@ module.exports.tasks_post = async (req,res)=>{
 //add new tasks
 module.exports.add_task_post = async (req,res)=>{
     const user = await User.findById(res.user.id);
+
     user.tasks.push({
         name:req.body.task_name
     });
@@ -83,6 +84,8 @@ module.exports.add_task_post = async (req,res)=>{
 
 //change task status
 module.exports.change_status_post = async (req,res)=>{
+    
+    console.log(req.body);
     const user = await User.findById(res.user.id);
     user.tasks.map(task=>{
         if(task.id  == req.body.task_id){
@@ -98,14 +101,16 @@ module.exports.change_status_post = async (req,res)=>{
 
 //delete any tazsk
 module.exports.delete_task_post = async (req,res)=>{
+    console.log(req.body);
     const user = await User.findById(res.user.id);
     user.tasks.map(task=>{
-        if(task.id != req.body.task_id){
+        if(task.id == req.body.task_id){
             task.is_deleted = true;
             return;
         }
     })
     await user.save();
+    console.log(user.tasks);
 
     const tasks = filterDeleted(user.tasks);
     res.send(tasks);

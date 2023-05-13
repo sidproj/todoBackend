@@ -18,7 +18,8 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://localhost:3001",
+      "*",
+      "http://localhost:3000"
     ],
   })
 );
@@ -33,7 +34,7 @@ const URL = "mongodb://127.0.0.1:27017/lab9";
 mongoose.set('strictQuery', false);
 mongoose.connect(URL)
 .then(()=>{
-    app.listen(3000,()=>{
+    app.listen(3100,()=>{
         console.log("Server started on port 3000...");
     });
 })
