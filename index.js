@@ -43,7 +43,9 @@ mongoose.connect(process.env.MONGODB_URI)
 
 
 //--------------------setting router and routes--------------------//
-
+router.get("/",(req,res)=>{
+  res.send("Welcome to todo App backend.")
+})
 router.post("/login",userController.login_post);
 router.post("/register",userController.register_post);
 router.post("/tasks",requireAuth,userController.tasks_post);
