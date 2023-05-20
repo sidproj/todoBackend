@@ -21,7 +21,7 @@ module.exports.login_post = async (req,res)=>{
     try {
         const { email, password } = req.body;
         const user = await User.login(email, password);
-       
+        console.log(req.body);
         const jwtToken = createJWT(user._id);
        
         res.status(200).json({ 
@@ -30,13 +30,14 @@ module.exports.login_post = async (req,res)=>{
         });
     }catch(err){
         console.log(err);
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ message: err.message,jwt:null });
     }
 }
 
 //registration for new user
 module.exports.register_post = async (req,res)=>{
     try{
+        console.log(req.body);
         const {first_name,last_name,email,password,conf_password} = req.body;
         if(password != conf_password) throw Error("Passwords must match");
         
@@ -66,6 +67,7 @@ module.exports.tasks_post = async (req,res)=>{
     const user = await User.findById(res.user.id);
 
     const tasks = filterDeleted(user.tasks);
+    console.log(tasks);
     res.send(tasks);
 }
 
@@ -106,6 +108,7 @@ module.exports.delete_task_post = async (req,res)=>{
     user.tasks.map(task=>{
         if(task.id == req.body.task_id){
             task.is_deleted = true;
+            task.deleteOne();
             return;
         }
     })
@@ -114,4 +117,10 @@ module.exports.delete_task_post = async (req,res)=>{
 
     const tasks = filterDeleted(user.tasks);
     res.send(tasks);
+}
+
+module.exports.get_user_profile_post = async (req,res)=>{
+    console.log(req.body);
+    const user = await User.findById(res.user.id);
+    res.send({fname:user.first_name,lname:user.last_name,email:user.email});
 }
